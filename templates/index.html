@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" http-equiv="X-UA-Compatible" content="IE=edge" >
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
+        integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ=="
+        crossorigin="anonymous">
+
+    <title>Monitoring status pages</title>
+</head>
+<body>
+        <nav class="navbar navbar-inverse">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                <a class="navbar-brand" href="#">Home</a>
+                <a class="navbar-brand" href="#">Some page</a>
+
+            </div>
+        </div>
+        </nav>
+
+
+    <div class="container">
+        <div class="row">
+            <div class='col-sm-3'></div>
+            <div class="col-sm-3">SignalFX</div>
+            <div class='col-sm-3' style='text-align:center; background-color: {{ responses['sfx'] }};  height:20px; cursor:pointer;' onclick=window.location.href='https://signalfx.statuspage.io'></div>
+            <div class='col-sm-3'></div>
+        </div>
+        <div class="row">
+            <div class='col-sm-3'></div>
+            <div class="col-sm-3">Redis</div>
+            <div class='col-sm-3' style='text-align:center; background-color: {{ responses['redis'] }};  height:20px; margin-top: 1px; cursor:pointer;' onclick=window.location.href='https://status.redislabs.com'></div>
+            <div class='col-sm-3'></div>
+        </div>
+        <div class="row">
+            <div class='col-sm-3'></div>
+            <div class="col-sm-3">Papertrail</div>
+            <div class='col-sm-3' style='text-align:center; background-color: {{ responses['papertrail'] }};  height:20px; margin-top: 1px; cursor:pointer;' onclick=window.location.href='https://www.papertrailstatus.com'></div>
+            <div class='col-sm-3'></div>
+        </div>
+        <div class="row">
+            <div class='col-sm-3'></div>
+            <div class="col-sm-3">Pager Duty</div>
+            <div class='col-sm-3' style='text-align:center; background-color: {{ responses['pd'] }};  height:20px; margin-top: 1px; cursor:pointer;' onclick=window.location.href='https://status.pagerduty.com'></div>
+            <div class='col-sm-3'></div>
+        </div>
+        <div class="row">
+            <div class='col-sm-3'></div>
+            <div class="col-sm-3">Github</div>
+            <div class='col-sm-3' style='text-align:center; background-color: {{ responses['github'] }};  height:20px; margin-top: 1px; cursor:pointer;' onclick=window.location.href='https://www.githubstatus.com'></div>
+            <div class='col-sm-3'></div>
+        </div>
+        <div class="row">
+            <div class='col-sm-3'></div>
+            <div class="col-sm-3">NPM</div>
+            <div class='col-sm-3' style='text-align:center; background-color: {{ responses['npm'] }};  height:20px; margin-top: 1px; cursor:pointer;' onclick=window.location.href='https://status.npmjs.org'></div>
+            <div class='col-sm-3'></div>
+        </div>
+        <div class="row">
+            <div class='col-sm-3'></div>
+            <div class="col-sm-3">Spotinst</div>
+            <div class='col-sm-3' style='text-align:center; background-color: {{ responses['spotinst'] }};  height:20px; margin-top: 1px; cursor:pointer;' onclick=window.location.href='http://status.spotinst.com'></div>
+            <div class='col-sm-3'></div>
+        </div>
+        <div class="row">
+            <div class='col-sm-3'></div>
+            <div class="col-sm-3">Tableau</div>
+            <div class='col-sm-3' style='text-align:center; background-color: {{ responses['tab'] }};  height:20px; margin-top: 1px; cursor:pointer;' onclick=window.location.href='https://trust.tableau.com'></div>
+            <div class='col-sm-3'></div>
+        </div>
+        <div class="row">
+            <div class='col-sm-4'></div>
+            <div class='col-sm-4 '>{{ responses }}</div>
+            <div class='col-sm-4'></div>
+
+        </div>
+    </div> <!-- /.container -->
+</body>
+
+</html>
