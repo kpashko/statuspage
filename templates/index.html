@@ -8,6 +8,7 @@
         crossorigin="anonymous">
 
     <title>Monitoring status pages</title>
+    <style> .site-block{ font-family: Gill Sans, Verdana; text-transform: uppercase; letter-spacing: -2px; font-size:200%; border-radius: 5px; text-align:left; color: white;  height:40px; margin-top: 1px; cursor:pointer;}</style>
 </head>
 <body>
         <nav class="navbar navbar-inverse">
@@ -29,52 +30,44 @@
 
     <div class="container">
         <div class="row">
-            <div class='col-sm-3'></div>
-            <div class="col-sm-3">SignalFX</div>
-            <div class='col-sm-3' style='text-align:center; background-color: {{ responses['sfx'] }};  height:20px; cursor:pointer;' onclick=window.location.href='https://signalfx.statuspage.io'></div>
-            <div class='col-sm-3'></div>
+            <div class='col-sm-4'></div>
+            <div class='col-sm-4 site-block' style='background-color: {{ responses['sfx'] }};' onclick=window.open('https://signalfx.statuspage.io')>SignalFX</div>
+            <div class='col-sm-4'></div>
         </div>
         <div class="row">
-            <div class='col-sm-3'></div>
-            <div class="col-sm-3">Redis</div>
-            <div class='col-sm-3' style='text-align:center; background-color: {{ responses['redis'] }};  height:20px; margin-top: 1px; cursor:pointer;' onclick=window.location.href='https://status.redislabs.com'></div>
-            <div class='col-sm-3'></div>
+            <div class='col-sm-4'></div>
+            <div class='col-sm-4 site-block' style='background-color: {{ responses['redis'] }};' onclick=window.open('https://status.redislabs.com')>Redis</div>
+            <div class='col-sm-4'></div>
         </div>
         <div class="row">
-            <div class='col-sm-3'></div>
-            <div class="col-sm-3">Papertrail</div>
-            <div class='col-sm-3' style='text-align:center; background-color: {{ responses['papertrail'] }};  height:20px; margin-top: 1px; cursor:pointer;' onclick=window.location.href='https://www.papertrailstatus.com'></div>
-            <div class='col-sm-3'></div>
+            <div class='col-sm-4'></div>
+            <div class='col-sm-4 site-block' style='background-color: {{ responses['papertrail'] }};' onclick=window.open('https://www.papertrailstatus.com')>Papertrail</div>
+            <div class='col-sm-4'></div>
         </div>
         <div class="row">
-            <div class='col-sm-3'></div>
-            <div class="col-sm-3">Pager Duty</div>
-            <div class='col-sm-3' style='text-align:center; background-color: {{ responses['pd'] }};  height:20px; margin-top: 1px; cursor:pointer;' onclick=window.location.href='https://status.pagerduty.com'></div>
-            <div class='col-sm-3'></div>
+            <div class='col-sm-4'></div>
+            <div class='col-sm-4 site-block' style='background-color: {{ responses['pd'] }};' onclick=window.open('https://status.pagerduty.com')>Pager Duty</div>
+            <div class='col-sm-4'></div>
         </div>
         <div class="row">
-            <div class='col-sm-3'></div>
-            <div class="col-sm-3">Github</div>
-            <div class='col-sm-3' style='text-align:center; background-color: {{ responses['github'] }};  height:20px; margin-top: 1px; cursor:pointer;' onclick=window.location.href='https://www.githubstatus.com'></div>
-            <div class='col-sm-3'></div>
+            <div class='col-sm-4'></div>
+            <div class='col-sm-4 site-block' style='background-color: {{ responses['github']}};' onclick=window.open('https://www.githubstatus.com')>Github</div>
+            <div class='col-sm-4'></div>
         </div>
         <div class="row">
-            <div class='col-sm-3'></div>
-            <div class="col-sm-3">NPM</div>
-            <div class='col-sm-3' style='text-align:center; background-color: {{ responses['npm'] }};  height:20px; margin-top: 1px; cursor:pointer;' onclick=window.location.href='https://status.npmjs.org'></div>
-            <div class='col-sm-3'></div>
+            <div class='col-sm-4'></div>
+            <div class='col-sm-4 site-block' style='background-color: {{ responses['npm'] }};' onclick=window.open('https://status.npmjs.org')>NPM</div>
+            <div class='col-sm-4'></div>
         </div>
         <div class="row">
-            <div class='col-sm-3'></div>
-            <div class="col-sm-3">Spotinst</div>
-            <div class='col-sm-3' style='text-align:center; background-color: {{ responses['spotinst'] }};  height:20px; margin-top: 1px; cursor:pointer;' onclick=window.location.href='http://status.spotinst.com'></div>
-            <div class='col-sm-3'></div>
+            <div class='col-sm-4'></div>
+            <div class='col-sm-4 site-block' style='background-color: {{ responses['spotinst']}};' onclick=window.open('http://status.spotinst.com')>Spotinst</div>
+            <div class='col-sm-4'></div>
         </div>
         <div class="row">
-            <div class='col-sm-3'></div>
-            <div class="col-sm-3">Tableau</div>
-            <div class='col-sm-3' style='text-align:center; background-color: {{ responses['tab'] }};  height:20px; margin-top: 1px; cursor:pointer;' onclick=window.location.href='https://trust.tableau.com'></div>
-            <div class='col-sm-3'></div>
+            <div class='col-sm-4'></div>
+            <div class='col-sm-4 site-block' style='background-color: {{ responses['tab'] }};' onclick=window.open('https://trust.tableau.com')>Tableau</div>
+            <div class='col-sm-4'></div>
         </div>
         <div class="row">
             <div class='col-sm-4'></div>
