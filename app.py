@@ -1,5 +1,6 @@
 from flask import Flask, redirect, render_template, request, url_for
-from scrape import Status
+from main import Status
+import asyncio
 
 app = Flask(__name__)
 
@@ -7,8 +8,8 @@ app = Flask(__name__)
 @app.route('/')
 def index():
     st = Status()
-    st.update()
-    return render_template("index.html", responses=st.responses)
+    asyncio.run(st.upd())
+    return render_template("index.html", RESPONSES=st.responses)
 
 
 if __name__ == '__main__':

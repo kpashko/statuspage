@@ -1,11 +1,10 @@
 from bs4 import BeautifulSoup
-import requests
 import sys
 import re
 import asyncio
 import aiohttp
 
-MAX_CLIENTS = 3
+RESPONSES = {}
 
 sys.setrecursionlimit(10000)
 
@@ -22,24 +21,47 @@ LINKS = {'npm': 'https://status.npmjs.org', 'pd': 'https://status.pagerduty.com'
          'cloudflare': 'https://www.cloudflarestatus.com'}
 
 
+async def aiohttp_get(url):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            return await response.text()
+
+
 class Status:
     def __init__(self):
         self.links = LINKS
         self.responses = {}
 
-    def sfx(self):
-        site = requests.get(LINKS['sfx'], headers=ua).content
+    async def get_npm(self):
+        t = await aiohttp_get(LINKS['npm'])
+        soup = BeautifulSoup(t, 'html.parser')
+        r = soup.find('span', class_="status font-large").text
+        if "operational" not in r.lower():
+            self.responses['npm'] = 'Red'
+            return
+        self.responses['npm'] = 'Green'
+
+    async def get_spot(self):
+        t = await aiohttp_get(LINKS['spotinst'])
+        soup = BeautifulSoup(t, 'html.parser')
+        r = soup.find('div', class_="section-status").text
+        if "operational" not in r.lower():
+            self.responses['spotinst'] = 'Red'
+            return
+        self.responses['spotinst'] = 'Green'
+
+    async def sfx(self):
+        site = await aiohttp_get(LINKS['sfx'])
         soup = BeautifulSoup(site, 'html.parser')  # lxml?
         r = soup.select('rect[class*="day-89"]')
-
         for elem in r:
             if elem.attrs['fill'] != '#2fcc66':
                 self.responses['sfx'] = "Red"
                 return
         self.responses['sfx'] = "Green"
 
-    def redis(self):
-        site = requests.get(LINKS['redis'], headers=ua).content
+    async def redis(self):
+        site = await aiohttp_get(LINKS['redis'])
         soup = BeautifulSoup(site, 'html.parser')
         r = soup.find_all('span', class_='component-status tool')
         for elem in r:
@@ -48,8 +70,8 @@ class Status:
                 return
         self.responses['redis'] = "Green"
 
-    def papertrail(self):
-        site = requests.get(LINKS['papertrail'], headers=ua).content
+    async def papertrail(self):
+        site = await aiohttp_get(LINKS['papertrail'])
         soup = BeautifulSoup(site, 'html.parser')
         r = soup.find_all('span', class_='component-status')
         for elem in r:
@@ -58,8 +80,8 @@ class Status:
                 return
         self.responses['papertrail'] = "Green"
 
-    def pd(self):
-        site = requests.get(LINKS['pd'], headers=ua).content
+    async def pd(self):
+        site = await aiohttp_get(LINKS['pd'])
         soup = BeautifulSoup(site, 'html.parser')
         r = soup.find_all('span', class_='component-status ')
         for elem in r:
@@ -68,8 +90,8 @@ class Status:
                 return
         self.responses['pd'] = "Green"
 
-    def github(self):
-        site = requests.get(LINKS['github'], headers=ua).content
+    async def github(self):
+        site = await aiohttp_get(LINKS['github'])
         soup = BeautifulSoup(site, 'html.parser')
         r = soup.find_all('span', class_='component-status ')
         for elem in r:
@@ -78,35 +100,19 @@ class Status:
                 return
         self.responses['github'] = "Green"
 
-    def npm(self):
-        site = requests.get(LINKS['npm'], headers=ua).content
-        soup = BeautifulSoup(site, 'html.parser')
-        r = soup.find('span', class_="status font-large").text
-        if "operational" not in r.lower():
-            self.responses['npm'] = 'Red'
-            return
-        self.responses['npm'] = 'Green'
+    """Tableau will wait for next time"""
 
-    def spotinst(self):
-        site = requests.get(LINKS['spotinst'], headers=ua).content
-        soup = BeautifulSoup(site, 'html.parser')
-        r = soup.find('div', class_="section-status").text
-        if "operational" not in r.lower():
-            self.responses['spotinst'] = 'Red'
-            return
-        self.responses['spotinst'] = 'Green'
+    # async def tableau():
+    #     site = await aiohttp_get(LINKS['tab'])
+    #     soup = BeautifulSoup(site, 'html.parser')
+    #     r = soup.find('div', class_="page-status")
+    #     if "operational" not in r.text.lower():
+    #         RESPONSES['tab'] = 'Red'
+    #         return
+    #     RESPONSES['tab'] = 'Green'
 
-    def tableau(self):
-        site = requests.get(LINKS['tab'], headers=ua).content
-        soup = BeautifulSoup(site, 'html.parser')
-        r = soup.find('div', class_="page-status")
-        if "operational" not in r.text.lower():
-            self.responses['tab'] = 'Red'
-            return
-        self.responses['tab'] = 'Green'
-
-    def atlassian(self):
-        site = requests.get(LINKS['atl'], headers=ua).content
+    async def atlassian(self):
+        site = await aiohttp_get(LINKS['atl'])
         soup = BeautifulSoup(site, 'html.parser')
         r = soup.find('div', class_="page-status")
         if "all systems operational" not in r.text.lower():
@@ -114,8 +120,8 @@ class Status:
             return
         self.responses['atl'] = 'Green'
 
-    def atlassian_dev(self):
-        site = requests.get(LINKS['atl_dev'], headers=ua).content
+    async def atlassian_dev(self):
+        site = await aiohttp_get(LINKS['atl_dev'])
         soup = BeautifulSoup(site, 'html.parser')
         r = soup.find('div', class_="page-status")
         if "all systems operational" not in r.text.lower():
@@ -123,8 +129,8 @@ class Status:
             return
         self.responses['atl_dev'] = 'Green'
 
-    def slack(self):
-        site = requests.get(LINKS['slack'], headers=ua).content
+    async def slack(self):
+        site = await aiohttp_get(LINKS['slack'])
         soup = BeautifulSoup(site, 'html.parser')
         r = soup.find_all(lambda tag: tag.name == 'p' and tag.get('class') == ['tiny'])
         for elem in r:
@@ -133,15 +139,19 @@ class Status:
                 return
             self.responses['slack'] = "Green"
 
-    def facebook(self):
-        site = requests.get(LINKS['facebook'], headers=ua).content.decode()
-        if '"health": 1' not in site:
-            self.responses['fb'] = 'Red'
-            return
-        self.responses['fb'] = 'Green'
 
-    def google(self):
-        site = requests.get(LINKS['google'], headers=ua).content
+    """FB will wait for next time"""
+    #
+    # async def facebook():
+    #     site = requests.get(LINKS['facebook'], headers=ua).content.decode()
+    #     if '"health": 1' not in site:
+    #         RESPONSES['fb'] = 'Red'
+    #         return
+    #     RESPONSES['fb'] = 'Green'
+    #
+
+    async def google(self):
+        site = await aiohttp_get(LINKS['google'])
         soup = BeautifulSoup(site, 'html.parser')
         r = soup.find('span', class_="status")
         if "all services available" in r.text.lower():
@@ -149,53 +159,19 @@ class Status:
         else:
             self.responses['gcp'] = "Red"
 
-    def cloudflare(self):
-        site = requests.get(LINKS['cloudflare'], headers=ua).content
+    async def cloudflare(self):
+        site = await aiohttp_get(LINKS['cloudflare'])
         soup = BeautifulSoup(site, 'html.parser')
         r = soup.find('div', class_="page-status")
-        if "all systems operational" not in r.text.lower():
+        if "all " not in r.text.lower():
             self.responses['cloudflare'] = 'Red'
             return
         self.responses['cloudflare'] = 'Green'
 
-    def update(self):
-        self.sfx()
-        self.redis()
-        self.papertrail()
-        self.pd()
-        self.github()
-        self.npm()
-        self.spotinst()
-        self.tableau()
-        self.atlassian()
-        self.atlassian_dev()
-        self.slack()
-        self.facebook()
-        self.google()
-        self.cloudflare()
-
-    def pr(self):
-        print(self.responses)
-
-
-method_list = [func for func in dir(Status) if getattr(Status, func)]
+    async def upd(self):
+        tasks = [self.get_npm(), self.get_spot(), self.cloudflare(), self.google(), self.slack(), self.atlassian_dev(), self.atlassian(), self.redis(), self.sfx(),
+                 self.pd(), self.github(), self.papertrail()]
+        await asyncio.wait(tasks)
 
 
 
-##link = "https://status.aws.amazon.com"
-##site = requests.get(link, headers=ua).content
-##soup = BeautifulSoup(site, "html.parser")
-# r = soup.find_all('td', class_='bb top pad8')
-# res = []
-
-# mysite = '<td class="bb top pad04 center" style="width: 32px"><img src="/images/status0.gif"></td> <td class="bb top pad8">Amazon Athena (Oregon)</td> <td class="bb pad8">Service is operating normally</td> <td class="bb center top"><a href="/rss/athena-us-west-2.rss"><img style="margin-top: 8px" src="/images/feed-icon-14x14.png"></a></td>' \
-#          '<td class="bb top pad8">Amazon API Gateway (Ohio)</td><td class="bb pad8">Service is operating normally</td><td class="bb top pad8">Amazon Athena (N. Virginia)</td>' \
-#          '<td class="bb pad8">Service is operating normally</td>'
-#reg = "<td.*?\"bb top pad8\">.*Ohio.|.*N. Virginia.</td><.*\">(.*?)</td>"
-##reg_oh = "<td.*?\"bb top pad8\">(.*Ohio|.*N. Virginia.*)</td>"
-##res = re.findall(reg_oh, str(soup))
-# soup = BeautifulSoup(mysite, 'html.parser')
-# r = soup.find_all('td', string=re.compile(r'.*Ohio.|.*N. Virginia.'))
-##print(res)
-
-print(method_list[25:])
