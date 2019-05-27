@@ -1,6 +1,5 @@
 from bs4 import BeautifulSoup
 import sys
-import re
 import asyncio
 import aiohttp
 
@@ -27,6 +26,12 @@ async def aiohttp_get(url):
             return await response.text()
 
 
+async def aiohttp_get_json(url):
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            return await response.json()
+
+
 class Status:
     def __init__(self):
         self.links = LINKS
@@ -35,7 +40,7 @@ class Status:
     async def get_npm(self):
         t = await aiohttp_get(LINKS['npm'])
         soup = BeautifulSoup(t, 'html.parser')
-        r = soup.find('span', class_="status font-large").text
+        r = soup.find('a', class_="actual-title with-ellipsis").text
         if "operational" not in r.lower():
             self.responses['npm'] = 'Red'
             return
@@ -102,14 +107,14 @@ class Status:
 
     """Tableau will wait for next time"""
 
-    # async def tableau():
-    #     site = await aiohttp_get(LINKS['tab'])
-    #     soup = BeautifulSoup(site, 'html.parser')
-    #     r = soup.find('div', class_="page-status")
-    #     if "operational" not in r.text.lower():
-    #         RESPONSES['tab'] = 'Red'
-    #         return
-    #     RESPONSES['tab'] = 'Green'
+    async def tableau(self):
+        site = await aiohttp_get(LINKS['tab'])
+        soup = BeautifulSoup(site, 'html.parser')
+        r = soup.find('div', class_="page-status")
+        if "operational" not in r.text.lower():
+            self.responses['tab'] = 'Red'
+            return
+        self.responses['tab'] = 'Green'
 
     async def atlassian(self):
         site = await aiohttp_get(LINKS['atl'])
@@ -139,16 +144,13 @@ class Status:
                 return
             self.responses['slack'] = "Green"
 
-
-    """FB will wait for next time"""
-    #
-    # async def facebook():
-    #     site = requests.get(LINKS['facebook'], headers=ua).content.decode()
-    #     if '"health": 1' not in site:
-    #         RESPONSES['fb'] = 'Red'
-    #         return
-    #     RESPONSES['fb'] = 'Green'
-    #
+    async def facebook(self):
+        site = await aiohttp_get_json(LINKS['facebook'])
+        print(site['current']['health'])
+        if site['current']['health'] == 1:
+            self.responses['fb'] = 'Green'
+            return
+        self.responses['fb'] = 'Red'
 
     async def google(self):
         site = await aiohttp_get(LINKS['google'])
@@ -162,15 +164,16 @@ class Status:
     async def cloudflare(self):
         site = await aiohttp_get(LINKS['cloudflare'])
         soup = BeautifulSoup(site, 'html.parser')
-        r = soup.find('div', class_="page-status")
-        if "all " not in r.text.lower():
+        r = soup.find('div', class_="page-status") #add dropdown with text
+        if "all systems operational" not in r.text.lower():
             self.responses['cloudflare'] = 'Red'
             return
         self.responses['cloudflare'] = 'Green'
 
     async def upd(self):
-        tasks = [self.get_npm(), self.get_spot(), self.cloudflare(), self.google(), self.slack(), self.atlassian_dev(), self.atlassian(), self.redis(), self.sfx(),
-                 self.pd(), self.github(), self.papertrail()]
+        tasks = [self.get_npm(), self.get_spot(), self.cloudflare(), self.google(), self.slack(), self.atlassian_dev(),
+                 self.atlassian(), self.redis(), self.sfx(), self.pd(), self.github(), self.papertrail(),
+                 self.tableau(), self.facebook()]
         await asyncio.wait(tasks)
 
 
