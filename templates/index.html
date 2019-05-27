@@ -7,6 +7,18 @@
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css"
         integrity="sha512-dTfge/zgoMYpP7QbHy4gWMEGsbsdZeCXz7irItjcC3sPUFtf0kuFbDz/ixG7ArTxmDjLXDmezHubeNikyKGVyQ=="
         crossorigin="anonymous">
+    <script type="text/javascript">
+<!--
+    function toggle_visibility(id) {
+       var e = document.getElementById(id);
+       if(e.style.display === 'block')
+          e.style.display = 'none';
+       else
+          e.style.display = 'block';
+    }
+//-->
+</script>
+
 
     <title>Monitoring status pages</title>
     <style> .site-block{ font-family: Gill Sans, Verdana; text-transform: uppercase; letter-spacing: -2px; font-size:200%; border-radius: 5px; text-align:left; color: white;  height:40px; margin-top: 1px; cursor:pointer;}</style>
@@ -102,10 +114,11 @@
         </div>
         <div class="row">
             <div class='col-sm-4'></div>
-            <div class='col-sm-4 '>{{ RESPONSES }}</div>
+            <div class='col-sm-4 site-block' style='background-color: darkorange; color:black' onclick=window.open('https://status.aws.amazon.com')>Amazon (Comming soon)</div>
             <div class='col-sm-4'></div>
-
         </div>
+
+
     </div> <!-- /.container -->
 </body>
 

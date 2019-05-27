@@ -146,7 +146,6 @@ class Status:
 
     async def facebook(self):
         site = await aiohttp_get_json(LINKS['facebook'])
-        print(site['current']['health'])
         if site['current']['health'] == 1:
             self.responses['fb'] = 'Green'
             return
